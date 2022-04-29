@@ -2,6 +2,7 @@
 from audioop import add
 import email
 from email.policy import default
+from lib2to3.pgen2.token import ATEQUAL
 import string
 from sqlalchemy import false
 import streamlit as st
@@ -130,9 +131,12 @@ def loti(c) :
                )  
 
 def principal():
-     data = pd.read_csv("final\Classeur11.csv") 
-     x = data.iloc[:,0:9]
+     data = pd.read_excel("final\data3.xlsx") 
+     x = data.iloc[:,1:10]
      y= data.iloc[:,10]
+     from sklearn.preprocessing import StandardScaler
+     scaler = StandardScaler()
+     scaler.fit(x,y)
      choose = option_menu("Main Menu",["Home","Dataset","Map","Regression","Prediction","About"],
     icons=['house','file','pin-map','graph-up','pie-chart-fill','person lines fill'],
      menu_icon = "list", default_index=0,
@@ -152,7 +156,7 @@ def principal():
          
             st.subheader("Import Dataset")
             datafile = st.file_uploader("Upload CSV",type=["CSV"])
-            x = data.iloc[:,0:9]
+            x = data.iloc[:,1:9]
             y= data.iloc[:,10]
             
             x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.2)
@@ -435,7 +439,7 @@ def principal():
               l= wcl2.multiselect("Choose weight",["uniform","distance"])
               acl1,acl2=st.columns(2)
               
-              acl1.header("    Algorithm")
+              acl1.header("Algorithm")
               ac=acl2.multiselect("Choose algo",["ball_tree","auto","kd_tree"])
               col3,col4 = st.columns(2)
               gridsearch = col3.button("GridSearch")
@@ -518,29 +522,29 @@ def principal():
               from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
          elif model =="QuadraticDiscriminantAnalysis":
          
-              x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
-              qua = QuadraticDiscriminantAnalysis()
-              qua.fit(x_train, y_train)
-              qua.score(x_test,y_test)
-              st.header("QuadraticDiscriminantAnalysis Params")
-              q1,q2,q3=st.columns(3)
+               x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
+               qua = QuadraticDiscriminantAnalysis()
+               qua.fit(x_train, y_train)
+               qua.score(x_test,y_test)
+               st.header("QuadraticDiscriminantAnalysis Params")
+               q1,q2,q3=st.columns(3)
               
-              q1.header("tol")
-              ql=q2.number_input("choose min",min_value=0.0001, max_value=0.1, value=0.0001)
-              qll=q3.number_input("choose max",min_value=0.0001, max_value=2.0, value=0.0001)
-              qu1,qu2=st.columns(2)
-              qu1.header("store_covariance")
-              qu= qu2.selectbox("Choose one",["True", "False"])
-              qlp1,qlp2,qlp3=st.columns(3)
+               q1.header("tol")
+               ql=q2.number_input("choose min",min_value=0.0001, max_value=0.1, value=0.0001)
+               qll=q3.number_input("choose max",min_value=0.0001, max_value=2.0, value=0.0001)
+               qu1,qu2=st.columns(2)
+               qu1.header("store_covariance")
+               qu= qu2.selectbox("Choose one",["True", "False"])
+               qlp1,qlp2,qlp3=st.columns(3)
               
-              qlp1.header("reg_param")
-              qlp22=qlp2.number_input("Choose min reg",min_value=0, max_value=10, value=1)
-              qlp23=qlp3.number_input("Choose max reg",min_value=1, max_value=50, value=1)
-              #st.write(mlp.score(x_test,y_test))
-              col3,col4 = st.columns(2)
-              gridsearch = col3.button("GridSearch")
-              randomsearch = col4.button("RandomSearch")  
-              from sklearn.mixture import GaussianMixture
+               qlp1.header("reg_param")
+               qlp22=qlp2.number_input("Choose min reg",min_value=0, max_value=10, value=1)
+               qlp23=qlp3.number_input("Choose max reg",min_value=1, max_value=50, value=1)
+               #st.write(mlp.score(x_test,y_test))
+               col3,col4 = st.columns(2)
+               gridsearch = col3.button("GridSearch")
+               randomsearch = col4.button("RandomSearch")  
+               from sklearn.mixture import GaussianMixture
 
          elif model =="GaussianMixture":
          
@@ -654,8 +658,8 @@ def principal():
               gmlp1,gmlp2,gmlp3=st.columns(3)
               
               gmlp1.header("n_iter")
-              gmlp22=mlp2.number_input("Choose min n",min_value=1, max_value=10, value=1)
-              gmlp23=mlp3.number_input("Choose max n",min_value=1, max_value=50000, value=1)
+              gmlp22=gmlp2.number_input("Choose min n",min_value=1, max_value=10, value=1)
+              gmlp23=gmlp3.number_input("Choose max n",min_value=1, max_value=50000, value=1)
               #st.write(mlp.score(x_test,y_test))
               col3,col4 = st.columns(2)
               gridsearch = col3.button("GridSearch")
@@ -721,7 +725,7 @@ def principal():
              gau= grid.best_estimator_
            if model == "OneVsOneClassifier":
              params = {'estimator': [oee], 'n_jobs': np.arange(one1, one2)}
-             grid = GridSearchCV(ridge, params)
+             grid = GridSearchCV(one, params)
              grid.fit(x_train,y_train)
              grid.best_params_
              ridge = grid.best_estimator_
@@ -759,7 +763,7 @@ def principal():
              mtree = grid.best_estimator_
             if model == "MLPClassifier":
              params = {'solver': [s], 'max_iter': mlll, 'alpha': 10.0 ** -np.arange(ml, mll), 'hidden_layer_sizes':np.arange(mlp22, mlp23), 'random_state':[0,1,2,3,4,5,6,7,8,9]}
-             grid =  RandomizedSearchCV(MLPClassifier(), params, n_jobs=-1)
+             grid =  RandomizedSearchCV(mlp, params, n_jobs=-1)
              grid.best_params_
              mlp = grid.best_estimator_
             if model == "RidgeClassifier":
@@ -805,9 +809,13 @@ def principal():
              grid.best_params_
              gmm= grid.best_estimator_
 #*********************RESULTs**********************************************************************************
+          
+     
          result = st.button("Results")
+     
          if result:
-           rcol1,rcol2 = st.columns(2)
+           rcol1,rcol2,rcol3= st.columns(3)
+           
            rcol1.header("Score")
            if model=="Perceptron":
               rcol1.write(percep.score(x_test,y_test))
@@ -833,105 +841,94 @@ def principal():
               rcol1.write(llp.score(x_test,y_test))
            if model=="GMM":
               rcol1.write(gmm.score(x_test,y_test)) 
-           rcol2.header("Curve")
-           rchoose = rcol2.selectbox("Choose curve",["Confusion Matrix","ROC Curve","Precision Recall Curve"])
-           if rchoose =="Confusion Matrix":
-             from sklearn.metrics import plot_confusion_matrix,confusion_matrix
-             rcol2.subheader("Confusion Matrix") 
+
+              rcol2.header("Curve")
+           rchoose = rcol2.selectbox("Choose curve",["Confusion Matrix","ROC Curve","Precision Recall Curve"]) 
+     
+         class_names = ['1', '2','3','4','5']
+     if rchoose =="Confusion Matrix":
+           st.set_option('deprecation.showPyplotGlobalUse', False)
+           from sklearn.metrics import plot_confusion_matrix,confusion_matrix
+           rcol3.subheader("Confusion Matrix") 
            if model=="SVC":
+                
                 #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=svc.predict(x_test))
-                rcol2.write([matrix])
-                #rcol2.pyplot(pc)
+                plot_confusion_matrix(svc, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="Perceptron":
                 #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=percep.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(percep, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="KNN":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=mknn.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(mknn, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="Tree":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=mtree.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(mtree, x_test, y_test, display_labels=class_names)
+                st.pyplot()
 
            if model=="MLPClassifier":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=mlp.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(mlp, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="RidgeClassifier":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=ridge.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(ridge, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="AdaBoostClassifier":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=ada.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(ada, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="QuadraticDiscriminantAnalysis":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=qua.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(qua, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="GaussianMixture":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=gau.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(gau, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="OneVsOneClassifier":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=one.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(one, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="LabelPropagation":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=llp.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(llp, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="GMM":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=gmm.predict(x_test))
-                rcol2.write([matrix])
+                plot_confusion_matrix(gmm, x_test, y_test, display_labels=class_names)
+                st.pyplot()
 #********************ROC Curve********************************************************************************                
-           if rchoose =="ROC Curve":
-             st.subheader("ROC Curve") 
-             if model =="SVC":
-                plot_roc_curve(svc, x_test, y_test)
-                st.plot()
-             if model =="KNN":
+     if rchoose =="ROC Curve":
+           st.subheader("ROC Curve") 
+           if model =="SVC":
+                 plot_roc_curve(svc, x_test, y_test)
+                 st.pyplot()
+           if model =="KNN":
                 pc=plot_roc_curve(knn, x_test, y_test)
                 st.pyplot(pc)
                 plt.show()
                 st.pyplot()
-             if model =="Tree":
+           if model =="Tree":
                 plot_roc_curve(mtree, x_test, y_test)
                 st.pyplot()
-             if model =="Voting":
+           if model =="Voting":
                 plot_roc_curve(voting, x_test, y_test)
                 st.pyplot()
-             if model =="Bagging":
+           if model =="Bagging":
                 plot_roc_curve(svc, x_test, y_test)
                 st.pyplot()
 
            if rchoose =="Precision Recall Curve":
              st.subheader("Precision-Recall Curve")
-             if model =="SVC":
+           if model =="SVC":
                 plot_precision_recall_curve(svc, x_test, y_test)
                 st.pyplot()
-             if model =="KNN":
+           if model =="KNN":
                 plot_precision_recall_curve(mknn, x_test, y_test)
                 st.pyplot()
-             if model =="Tree":
+           if model =="Tree":
                 plot_precision_recall_curve(mtree, x_test, y_test)
                 st.pyplot()
-             if model =="Voting":
+           if model =="Voting":
                 plot_precision_recall_curve(voting, x_test, y_test)
                 st.pyplot()
-             if model =="Bagging":
+           if model =="Bagging":
                 plot_precision_recall_curve(svc, x_test, y_test)
                 st.pyplot()
                 
-
-           
-           
-
-
       # **************Map***************************************************
      elif choose =="Map":
            city = pd.DataFrame ( { 'awesome cities' : ["Ait boulmane", "Source Arbalou" ,"Boumia", "Zaïda","AnzarOufounas", "Tamdafelt", "Missour",  "Sebra","Safsaf", "Pont Hassan II","Moulouya"],
@@ -1052,6 +1049,8 @@ principal()
 
 
     
+
+
 
 
 
