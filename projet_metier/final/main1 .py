@@ -842,17 +842,18 @@ def principal():
            if model=="GMM":
               rcol1.write(gmm.score(x_test,y_test)) 
 
-              rcol2.header("Curve")
-           rchoose = rcol2.selectbox("Choose curve",["Confusion Matrix","ROC Curve","Precision Recall Curve"]) 
+              
      
          class_names = ['1', '2','3','4','5']
+    
+     rcol,rcol22,rcol33= st.columns(3)
+     rchoose = rcol22.selectbox("Choose curve",["Confusion Matrix","ROC Curve","Precision Recall Curve"])
      if rchoose =="Confusion Matrix":
+
            st.set_option('deprecation.showPyplotGlobalUse', False)
-           from sklearn.metrics import plot_confusion_matrix,confusion_matrix
-           rcol3.subheader("Confusion Matrix") 
+           from sklearn.metrics import plot_confusion_matrix,confusion_matrix,ConfusionMatrixDisplay
+           rcol.subheader("Confusion Matrix") 
            if model=="SVC":
-                
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
                 plot_confusion_matrix(svc, x_test, y_test, display_labels=class_names)
                 st.pyplot()
            if model=="Perceptron":
@@ -891,6 +892,9 @@ def principal():
                 plot_confusion_matrix(gmm, x_test, y_test, display_labels=class_names)
                 st.pyplot()
 #********************ROC Curve********************************************************************************                
+     from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
+
+     
      if rchoose =="ROC Curve":
            st.subheader("ROC Curve") 
            if model =="SVC":
@@ -911,9 +915,10 @@ def principal():
                 plot_roc_curve(svc, x_test, y_test)
                 st.pyplot()
 
-           if rchoose =="Precision Recall Curve":
-             st.subheader("Precision-Recall Curve")
+     if rchoose =="Precision Recall Curve":
+           st.subheader("Precision-Recall Curve")
            if model =="SVC":
+                
                 plot_precision_recall_curve(svc, x_test, y_test)
                 st.pyplot()
            if model =="KNN":
