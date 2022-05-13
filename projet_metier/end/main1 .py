@@ -130,7 +130,7 @@ def loti(c) :
                )  
 
 def principal():
-     data = pd.read_csv("final\Classeur11.csv") 
+     data = pd.read_csv("projet_metier\end\Classeur11.csv") 
      x = data.iloc[:,0:9]
      y= data.iloc[:,10]
      choose = option_menu("Main Menu",["Home","Dataset","Map","Regression","Prediction","About"],
@@ -148,7 +148,7 @@ def principal():
        #*********************************************Import dataset**************************************************************
 
      if choose == "Dataset":
-            loti("final\data-analysis.json")
+            loti("projet_metier\end\data-analysis.json")
          
             st.subheader("Import Dataset")
             datafile = st.file_uploader("Upload CSV",type=["CSV"])
@@ -186,7 +186,7 @@ def principal():
            #*********************************************Regression**************************************************************    
      elif choose == "Regression":
        
-        loti("final\smooth-chart.json")
+        loti("projet_metier\end\smooth-chart.json")
         def dataaugmantation(dataset):
             PHM1 = pd.read_csv(dataset,delimiter=";")
             st.write(PHM1)
@@ -236,7 +236,7 @@ def principal():
             PHM1.to_csv("newPHM1.csv") 
             
         
-        dataaugmantation("final\PHM1.csv")
+        dataaugmantation("projet_metier\end\PHM1.csv")
        #  
         
        # newPHM1 = pd.read("newPHM1.csv")
@@ -305,7 +305,7 @@ def principal():
            st.pyplot(fig)
   #*********************************************Prediction**************************************************************
      elif choose == "Prediction":
-         loti("final\98831-pie-chart.json")
+         loti("projet_metier\end\98831-pie-chart.json")
          st.title("Prediction")
          coll1, coll2= st.columns(2)
          kind = coll1.selectbox("Kind of Predict",["One Predict","Whith File"])
@@ -834,15 +834,15 @@ def principal():
            if model=="GMM":
               rcol1.write(gmm.score(x_test,y_test)) 
            rcol2.header("Curve")
+           class_names=["1","2","3","4","5"]
            rchoose = rcol2.selectbox("Choose curve",["Confusion Matrix","ROC Curve","Precision Recall Curve"])
            if rchoose =="Confusion Matrix":
              from sklearn.metrics import plot_confusion_matrix,confusion_matrix
              rcol2.subheader("Confusion Matrix") 
            if model=="SVC":
-                #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
-                matrix = confusion_matrix(y_true=y_test,y_pred=svc.predict(x_test))
-                rcol2.write([matrix])
-                #rcol2.pyplot(pc)
+                st.subheader("Confusion Matrix") 
+                plot_confusion_matrix(svc, x_test, y_test, display_labels=class_names)
+                st.pyplot()
            if model=="Perceptron":
                 #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
                 matrix = confusion_matrix(y_true=y_test,y_pred=percep.predict(x_test))
@@ -883,7 +883,7 @@ def principal():
            if model=="LabelPropagation":
                 #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
                 matrix = confusion_matrix(y_true=y_test,y_pred=llp.predict(x_test))
-                rcol2.write([matrix])
+                st.plo([matrix])
            if model=="GMM":
                 #pc=plot_confusion_matrix(svc,X=x_test.Classe,y_true= y_test, display_labels = svc.classes_,normalize="pred")
                 matrix = confusion_matrix(y_true=y_test,y_pred=gmm.predict(x_test))
@@ -945,7 +945,7 @@ def principal():
        #first.image("projet_metier/fs.png")
        #last.image("projet_metier/ensam.jpg",width=270)
        
-       loti("final\loading-animation.json")
+       loti("projet_metier\end\loading-animation.json")
      elif choose =="Map":
         site = pd.DataFrame({"nom site":["Ait boulmane", "Ait OhaOhaki", "Source Arbalou", "Krouchene=Irhdis","Boumia", "Zaïda","AnzarOufounas", "Aval AnzarOufounas", "Anzegmir avant barrage", "Anzegmir Amont", "Tamdafelt", "Missour", "Outat Al Haj", "Tindint", "Moulouya Amont Melloulou", "Moulouya Aval Melloulou", "Moulouya Amont Za", "Moulouya aval Za", "Sebra","Safsaf", "Pont Hassan II","Pré-Estuaire"],
                          "lat": [506388.899, 508378.875, 510270.048, 521267.473, 528157.842, 541119.868, 522710.665, 523517.135, 529513.51, 545371.311, 608563.842, 632589.028, 657696.741, 667765.779, 688527.58, 691373.449, 716153.504, 717261.981, 750073.689, 752451.688, 770940.249, 774425.807],
