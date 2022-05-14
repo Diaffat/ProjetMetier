@@ -1031,19 +1031,19 @@ principal()
 #*************************************************
     
     
-    #if st.button("Prédire"):
-       # st.write(val)
-       # if ypred[0]==1:
-           # classe = "Excellente"
-       # if ypred[0]==2:
-        #    classe = "Bonne"
-       # if ypred[0]==3:
-        #    classe = "Peu Polluée"
-       # if ypred[0]==4:
-        #    classe = "Mauvaise"
-        #if ypred[0]==5:
-        #    classe = "Très mauvaise"
-       # st.success(f"La prediction est: {classe}")
+    if st.button("Prédire"):
+        st.write(val)
+        if ypred[0]==1:
+            classe = "Excellente"
+        if ypred[0]==2:
+           classe = "Bonne"
+        if ypred[0]==3:
+            classe = "Peu Polluée"
+        if ypred[0]==4:
+           classe = "Mauvaise"
+        if ypred[0]==5:
+          classe = "Très mauvaise"
+        st.success(f"La prediction est: {classe}")
 
 
  
