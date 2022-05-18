@@ -361,8 +361,10 @@ def principal():
            st.write(kernel)
            col3,col4 = st.columns(2)
            gridsearch = col3.button("GridSearch")
-           randomsearch = col4.button("RandomSearch")   
-         
+           randomsearch = col4.button("RandomSearch")  
+
+
+           
            #st.write(firstc)
         
          elif model =="Tree":
@@ -417,7 +419,8 @@ def principal():
               ac=acl2.multiselect("Choose algo",["ball_tree","auto","kd_tree"])
               col3,col4 = st.columns(2)
               gridsearch = col3.button("GridSearch")
-              randomsearch = col4.button("RandomSearch")   
+              randomsearch = col4.button("RandomSearch") 
+
          elif model =="Perceptron":
          
               x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
@@ -926,9 +929,41 @@ def principal():
              if model =="Bagging":
                 plot_precision_recall_curve(svc, x_test, y_test)
                 st.pyplot()
-                
+# **************predict***************************************************
 
-           
+
+
+           ypred = model.predict([val])
+           if st.button("Predict"):
+              #val = [PH, T, CE,	O2,	NH,	NO,	SO,	PO,	DBO5]
+             if model =="SVC":
+                  ypred = svc.predict([val])
+
+                  if ypred[0]==1:
+                   classe = "Excellente"
+                  if ypred[0]==2:
+                   classe = "Bonne"
+                  if ypred[0]==3:
+                   classe = "Peu Polluée"
+                  if ypred[0]==4:
+                   classe = "Mauvaise"
+                  if ypred[0]==5:
+                   classe = "Très mauvaise"
+                  st.success(f"La prediction est: {classe}")
+             if model =="KNN":
+                  ypred = knn.predict([val])
+
+                  if ypred[0]==1:
+                   classe = "Excellente"
+                  if ypred[0]==2:
+                   classe = "Bonne"
+                  if ypred[0]==3:
+                   classe = "Peu Polluée"
+                  if ypred[0]==4:
+                   classe = "Mauvaise"
+                  if ypred[0]==5:
+                   classe = "Très mauvaise"
+                  st.success(f"La prediction est: {classe}")
            
 
 
@@ -1029,22 +1064,8 @@ principal()
 
     
 #*************************************************
-    
-    
-    if st.button("Prédire"):
-        st.write(val)
-        if ypred[0]==1:
-            classe = "Excellente"
-        if ypred[0]==2:
-           classe = "Bonne"
-        if ypred[0]==3:
-            classe = "Peu Polluée"
-        if ypred[0]==4:
-           classe = "Mauvaise"
-        if ypred[0]==5:
-          classe = "Très mauvaise"
-        st.success(f"La prediction est: {classe}")
 
+    
 
  
   
