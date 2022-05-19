@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn import tree
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.semi_supervised import LabelPropagation 
 from sklearn.ensemble import VotingClassifier
 from streamlit_option_menu import option_menu
 from PIL import Image
@@ -38,8 +39,10 @@ from sklearn.linear_model import Perceptron
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import RidgeClassifier
 from sklearn.preprocessing import MinMaxScaler,StandardScaler
+from sklearn.ensemble import AdaBoostClassifier 
 import base64
 import seaborn as sns
+
 
 def set_bg_hack(main_bg):
     '''
@@ -133,6 +136,7 @@ def principal():
      data = pd.read_csv("projet_metier\end\Classeur11.csv") 
      x = data.iloc[:,0:9]
      y= data.iloc[:,10]
+     x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
      choose = option_menu("Main Menu",["Home","Dataset","Map","Regression","Modeles Training","Prediction"],
     icons=['house','file','pin-map','graph-up','pie-chart-fill','person lines fill'],
      menu_icon = "list", default_index=0,
@@ -310,10 +314,7 @@ def principal():
          coll1, coll2= st.columns(2)
          kind = coll1.selectbox("Kind of Predict",["One Training","Whith File"])
          model = coll2.selectbox("Model",["SVC","Tree","KNN","Voting","Bagging","Perceptron","MLPClassifier","RidgeClassifier","GMM","QuadraticDiscriminantAnalysis","OneVsOneClassifier","GaussianMixture","AdaBoostClassifier"])
-        
-    
-    
-    
+
          if kind =="One Training":
             st.balloons()
          elif kind == "Whith File":
@@ -328,6 +329,7 @@ def principal():
                   data = pd.read_csv(datafile)
            
                   st.dataframe(data)
+
 #**********************************tuning parameters**************************************************       
          if model =="SVC":
         
@@ -484,8 +486,6 @@ def principal():
               gridsearch = col3.button("GridSearch")
               randomsearch = col4.button("RandomSearch") 
 
-              from sklearn.ensemble import AdaBoostClassifier 
-
          elif model =="AdaBoostClassifier ":
               x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
               ada = AdaBoostClassifier ()
@@ -598,7 +598,6 @@ def principal():
               col3,col4 = st.columns(2)
               gridsearch = col3.button("GridSearch")
               randomsearch = col4.button("RandomSearch") 
-              from sklearn.semi_supervised import LabelPropagation 
 
          elif model =="LabelPropagation ":
          
@@ -732,6 +731,7 @@ def principal():
 #********************randomsearch***********************************************************
          if randomsearch:
             if model == "SVC":
+             svc = svm.SVC(C= 0.1, gamma=1, kernel='linear')
              params = {"C":np.arange(Min_value_C,Max_value_C,0.1),"gamma":np.arange(Min_value_g,Max_value_g,0.1),"kernel":kernel}
              grid = RandomizedSearchCV(svc,params)
              grid.fit(x_train,y_train)
@@ -944,7 +944,7 @@ def principal():
             st.title("Prediction")
             coll1, coll2= st.columns(2)
             kind = coll1.selectbox("Predict",["One Prediction"])
-            model = coll2.selectbox("Model",["SVC","Tree","KNN","Voting","Bagging","Perceptron","MLPClassifier","RidgeClassifier","GMM","QuadraticDiscriminantAnalysis","OneVsOneClassifier","GaussianMixture","AdaBoostClassifier"])
+            model = coll2.selectbox("Model",["SVC","Tree","KNN","Voting","Bagging","Perceptron","MLPClassifier","LabelPropagation","RidgeClassifier","GMM","QuadraticDiscriminantAnalysis","OneVsOneClassifier","GaussianMixture","AdaBoostClassifier"])
             st.header(" Saisir les donner d'entrées")
             PH = st.number_input("PH")
             T = st.number_input("T")
@@ -959,11 +959,15 @@ def principal():
             if st.button("Predict"):
               #val = [PH, T, CE,	O2,	NH,	NO,	SO,	PO,	DBO5]
              if model =="SVC":
-               params = {"C":np.arange(Min_value_C,Max_value_C,0.1),"gamma":np.arange(Min_value_g,Max_value_g,0.1),"kernel":kernel}
+               x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
+               svc=svm.SVC()
+               params = {"C":np.arange(0.1,1.0,0.1),"gamma":np.arange(0.01,1.0,0.1)}
                grid = RandomizedSearchCV(svc,params)
                grid.fit(x_train,y_train)
                grid.best_params_
                svc = grid.best_estimator_
+               svc.fit(x_train, y_train)
+               st.write(svc.score(x_test,y_test)) 
                ypred = svc.predict([val])
 
                if ypred[0]==1:
@@ -976,9 +980,17 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="KNN":
-               ypred = knn.predict([val])
+               mknn =  KNeighborsClassifier(n_neighbors=1)
+               params = {"n_neighbors":np.arange(int(1),int(100),1)}
+               grid = RandomizedSearchCV(mknn,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               mknn = grid.best_estimator_
+               mknn.fit(x_train, y_train)
+               st.write(mknn.score(x_test,y_test)) 
+               ypred = mknn.predict([val])
 
                if ypred[0]==1:
                   classe = "Excellente"
@@ -990,8 +1002,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="Tree":
+               params = {"min_impurity_decrease":np.arange(0.001,20,0.1),"min_samples_split":np.arange(0.0,1.0,0.01),"min_samples_leaf":np.arange(0.01,0.5,0.001),"ccp_alpha":np.arange(0.001,10,0.1)}
+               mtree = tree.DecisionTreeClassifier()
+               grid = RandomizedSearchCV(mtree,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               mtree = grid.best_estimator_
+               st.write(mtree.score(x_test,y_test)) 
                ypred =mtree.predict([val])
 
                if ypred[0]==1:
@@ -1004,8 +1023,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="Perceptron":
+               #params = {"min_impurity_decrease":np.arange(0.001,20,0.1),"min_samples_split":np.arange(0.0,1.0,0.01),"min_samples_leaf":np.arange(0.01,0.5,0.001),"ccp_alpha":np.arange(0.001,10,0.1)}
+               percep = Perceptron()
+               #grid = RandomizedSearchCV(percep,params)
+               percep.fit(x_train,y_train)
+               #grid.best_params_
+               #percep = grid.best_estimator_
+               st.write(percep.score(x_test,y_test)) 
                ypred =percep.predict([val])
 
                if ypred[0]==1:
@@ -1018,8 +1044,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="MLPClassifier":
+               params = {'alpha': 10.0 ** -np.arange(1, 10), 'hidden_layer_sizes':np.arange(1, 100), 'random_state':[0,1,2,3,4,5,6,7,8,9]}
+               mlp = MLPClassifier()
+               grid = RandomizedSearchCV(mlp,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               mlp = grid.best_estimator_
+               st.write(mlp.score(x_test,y_test))
                ypred = mlp.predict([val])
 
                if ypred[0]==1:
@@ -1032,8 +1065,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="RidgeClassifier":
+               params = {'max_iter': [1000], 'alpha': np.arange(1, 10), 'random_state':[0,1,2,3,4,5,6,7,8,9]}
+               ridge= RidgeClassifier()
+               grid = RandomizedSearchCV(ridge,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               ridge = grid.best_estimator_
+               st.write(ridge.score(x_test,y_test))
                ypred = ridge.predict([val])
 
                if ypred[0]==1:
@@ -1046,8 +1086,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="AdaBoostClassifier":
+               params = {'learning_rate': np.arange(1, 10), 'random_state':[0,1,2,3,4,5,6,7,8,9]}
+               ada= AdaBoostClassifier()
+               grid = RandomizedSearchCV(ada,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               ada= grid.best_estimator_
+               st.write(ada.score(x_test,y_test))
                ypred = ada.predict([val])
 
                if ypred[0]==1:
@@ -1060,7 +1107,7 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="QuadraticDiscriminatAnalysis":
                ypred = qua.predict([val])
 
@@ -1074,8 +1121,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="GausianMixture":
+               params = {'n_components': np.arange(1, 100), 'cv': np.arange(1,23),'max_iter': [100,1000,2000], 'tol': np.arange(3, 40)}
+               gau= GaussianMixture()
+               grid = RandomizedSearchCV(gau,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               gau= grid.best_estimator_
+               st.write(gau.score(x_test,y_test))
                ypred = gau.predict([val])
 
                if ypred[0]==1:
@@ -1088,8 +1142,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="OneVsOneClassifier":
+               params = {'estimator': [100,200,300,400,500,600,700,800,900,1000], 'n_jobs': np.arange(1, 100)}
+               one= AdaBoostClassifier()
+               grid = RandomizedSearchCV(one,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               one= grid.best_estimator_
+               st.write(one.score(x_test,y_test))
                ypred = one.predict([val])
 
                if ypred[0]==1:
@@ -1102,8 +1163,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="LabelPropagation":
+               params = {"n_neighbors":np.arange(2,234,1),"gamma":np.arange(0.0,1.0,0.1)}
+               llp= LabelPropagation()
+               grid = RandomizedSearchCV(llp,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               llp= grid.best_estimator_
+               st.write(llp.score(x_test,y_test))
                ypred = llp.predict([val])
 
                if ypred[0]==1:
@@ -1116,8 +1184,15 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
              if model =="GMM":
+               params = {'n_components': np.arange(1, 100), 'cv': np.arange(1,23),'max_iter': [100,1000,2000], 'tol': np.arange(3, 40)}
+               gmm= GMM()
+               grid = RandomizedSearchCV(gmm,params)
+               grid.fit(x_train,y_train)
+               grid.best_params_
+               gmm= grid.best_estimator_
+               st.write(gmm.score(x_test,y_test))
                ypred = gmm.predict([val])
 
                if ypred[0]==1:
@@ -1130,7 +1205,7 @@ def principal():
                   classe = "Mauvaise"
                if ypred[0]==5:
                   classe = "Très mauvaise"
-               st.success(f"La prediction est: {classe}")
+               st.success(f"La qualité de ton eau est: {classe}")
 
 principal()
 
