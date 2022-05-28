@@ -1,15 +1,12 @@
 #hi
 from audioop import add
-import email
 from email.policy import default
-import string
 from sqlalchemy import false
 import streamlit as st
 import pandas as pd
 from matplotlib import pyplot as plt
-import plotly.graph_objects as go
 import numpy as np
-from sklearn import svm, datasets
+from sklearn import svm 
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV,RandomizedSearchCV
 from sklearn import tree
@@ -18,18 +15,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.semi_supervised import LabelPropagation 
 from sklearn.ensemble import VotingClassifier
 from streamlit_option_menu import option_menu
-from PIL import Image
-#from streamlit_aggrid import Agrid
-#from raceplotly.plots import barplot
-from collections import deque
-from streamlit.delta_generator import DeltaGenerator as _DeltaGenerator
-#import leafmap.kepler as leafmap
-from streamlit.elements.arrow import ArrowMixin
-from pandas.io.formats.style import Styler
+
 #import pyrebase
 #from datatime import datatime
 import json
-import requests  # pip install requests
 import streamlit as st  # pip install streamlit
 from streamlit_lottie import st_lottie
 from torch import classes  # pip install streamlit-lottie
@@ -44,7 +33,6 @@ from sklearn.metrics import plot_confusion_matrix,confusion_matrix,ConfusionMatr
 from sklearn.mixture import GaussianMixture, BayesianGaussianMixture
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import base64
-import seaborn as sns
 def set_bg_hack(main_bg):
     '''
     A function to unpack an image from root folder and set as bg.
@@ -134,7 +122,7 @@ def loti(c) :
                )  
 
 def principal():
-     data = pd.read_csv("projet_metier\end\Classeur11.csv") 
+     data = pd.read_csv("C:/Users/DIASSANA/Desktop/ProjetMetier/projet_metier/end/Classeur11.csv") 
      x = data.iloc[:,0:9]
      y= data.iloc[:,10]
      x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
@@ -157,7 +145,7 @@ def principal():
        #*********************************************Import dataset**************************************************************
 
      if choose == "Dataset":
-            loti("projet_metier\end\data-analysis.json")
+            loti("C:/Users/DIASSANA/Desktop/ProjetMetier/projet_metier/end/data-analysis.json")
          
             st.subheader("Import Dataset")
             datafile = st.file_uploader("Upload CSV",type=["CSV"])
@@ -195,7 +183,7 @@ def principal():
            #*********************************************Regression**************************************************************    
      elif choose == "Regression":
        
-        loti("projet_metier\end\smooth-chart.json")
+        loti("C:/Users/DIASSANA/Desktop/ProjetMetier/projet_metier/end/smooth-chart.json")
         def dataaugmantation(dataset):
             PHM1 = pd.read_csv(dataset,delimiter=";")
             st.write(PHM1)
@@ -245,7 +233,7 @@ def principal():
             PHM1.to_csv("newPHM1.csv") 
             
         
-        dataaugmantation("projet_metier\end\PHM1.csv")
+        dataaugmantation("C:/Users/DIASSANA/Desktop/ProjetMetier/projet_metier/end/PHM1.csv")
        #  
         
        # newPHM1 = pd.read("newPHM1.csv")
@@ -314,7 +302,7 @@ def principal():
            st.pyplot(fig)
   #*********************************************Prediction**************************************************************
      elif choose == "Modeles Training":
-         loti("projet_metier\end\98831-pie-chart.json")
+         loti("C:/Users/DIASSANA/Desktop/ProjetMetier/projet_metier/end/98831-pie-chart.json")
          st.title("Prediction")
          coll1, coll2= st.columns(2)
          kind = coll1.selectbox("Kind of Predict",["One Training","Whith File"])
@@ -698,10 +686,10 @@ def principal():
              gau= grid.best_estimator_
            if model == "OneVsOneClassifier":
              params = {'estimator': [oee], 'n_jobs': np.arange(one1, one2)}
-             grid = GridSearchCV(ridge, params)
+             grid = GridSearchCV(one, params)
              grid.fit(x_train,y_train)
              grid.best_params_
-             ridge = grid.best_estimator_
+             one = grid.best_estimator_
            if model == "LabelPropagation":
              params = {"n_neighbors":np.arange(llp22,llp23,1),"gamma":np.arange(ll,lll,0.1),"kernel":[LL],"max_iter":[llll]}
              grid = GridSearchCV(llp,params)
@@ -967,7 +955,7 @@ def principal():
        #first.image("projet_metier/fs.png")
        #last.image("projet_metier/ensam.jpg",width=270)
        
-       loti("projet_metier\end\loading-animation.json")
+       loti("C:/Users/DIASSANA/Desktop/ProjetMetier/projet_metier/end/loading-animation.json")
      elif choose=="Prediction":
             st.title("Prediction")
             coll1, coll2= st.columns(2)
