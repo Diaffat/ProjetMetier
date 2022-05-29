@@ -15,7 +15,6 @@ import seaborn as sns
 import  matplotlib.pyplot as plt
 import pandas as pd
 import json
-#hi
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler,StandardScaler
 from sklearn.manifold import TSNE, LocallyLinearEmbedding, Isomap, MDS, SpectralEmbedding
@@ -48,10 +47,7 @@ from sklearn.mixture import GaussianMixture, BayesianGaussianMixture
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import base64
 import pickle
-
 from sympy import N
-
-
 
 def report():
     st.title("Metrics Description")
@@ -149,14 +145,11 @@ choose = option_menu("Main Menu",["Home","Data","Map","Regression","Classificati
     )
 #************************************************************************************************************
 if choose == "Data":
-            loti("ProjetMetier final/datanalysis.json")
+            loti("C:/Users/DIASSANA/Desktop/ProjetMetier/Projet Metier final/ProjetMetier final/datanalysis.json")
          
             st.subheader("Import Dataset")
             datafile = st.file_uploader("Upload CSV",type=["CSV"])
-           
-            
-            
-           
+                    
             if datafile is not None:
                st.write(type(datafile))
                file_details = {"filename":datafile.name,"filetype":datafile.type,"filesize":datafile.size}
@@ -190,7 +183,7 @@ if choose == "Data":
                
 if choose == "Map":
            from streamlit_folium import folium_static
-           loti("ProjetMetier final/99797-data-management.json")
+           loti("C:/Users/DIASSANA/Desktop/ProjetMetier/Projet Metier final/ProjetMetier final/99797-data-management.json")
            st.title("Ci-dessous une vue des differntes stations du fleuve MOULOUYA")
            markers_dict = {"Ait boulmane": [ 31.0 , -7.1], 
                             "Source Arbalou": [31.2911, -9.2391], 
@@ -220,8 +213,8 @@ if choose == "Map":
 
                 
 if choose == "Regression":
-    loti("ProjetMetier final/98831-pie-chart.json")
-    df = pd.read_csv("ProjetMetier final/dataset.csv")
+    loti("C:/Users/DIASSANA/Desktop/ProjetMetier/Projet Metier final/ProjetMetier final/98831-pie-chart.json")
+    df = pd.read_csv("C:/Users/DIASSANA/Desktop/ProjetMetier/Projet Metier final/ProjetMetier final/dataset.csv")
     #y=df.iloc[0:len(df),1] 
     x=np.arange(0,66)
     
@@ -366,7 +359,7 @@ if choose == "Regression":
 
 
 if choose == "Classification":
-    loti("ProjetMetier final/98831-pie-chart.json")
+    loti("C:/Users/DIASSANA/Desktop/ProjetMetier/Projet Metier final/ProjetMetier final/98831-pie-chart.json")
     with st.sidebar:
         st.title("Classification")
         model = st.selectbox("Choose Model",["SVC","RandomForest","Tree","KNN","Voting","Bagging","Perceptron","MLPClassifier","RidgeClassifier"])
@@ -379,23 +372,16 @@ if choose == "Classification":
 
         # st.title("Prediction")
         # kind = st.checkbox("One Predict")
-
-
-        
-    data = pd.read_csv("ProjetMetier final/dataset.csv")
+    data = pd.read_csv("C:/Users/DIASSANA/Desktop/ProjetMetier/Projet Metier final/ProjetMetier final/dataset.csv")
     x = data.iloc[:,1:10]
     y= data.iloc[:,11]
     x_train,x_test,y_train,y_test = train_test_split(x,y, test_size=0.2)
-    
-  
         # if mesure:
         #     col1, col2, col3 = st.columns(3)
         #     col1.metric("Accurancy", round(svc.score(x,y),3))
         #     col2.metric("MSE", "9 mph")
         #     col3.metric("F1SCORE", "86%")
-        
     
-
     if option=="GridSearch":
 
             if model == "SVC":
@@ -1970,7 +1956,7 @@ if choose == "Home":
                         )  
         st.title("BIENVENUE SUR NOTRE APPLICATION WEB DE PREDICTION ")
 
-        loti("ProjetMetier final/artificial-intelligence.json")
+        loti("C:/Users/DIASSANA/Desktop/ProjetMetier/Projet Metier final/ProjetMetier final/artificial-intelligence.json")
         st.write("Veuillez parcourir les autres options de l'application")
 
        
