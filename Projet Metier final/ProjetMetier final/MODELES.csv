@@ -1,0 +1,11 @@
+nomModele,hyperpara,METRICS,timestamp
+svc2022-06-23##12:11:03,"{'C': 0.01, 'gamma': 0.01, 'kernel': 'poly'}","              precision    recall  f1-score   support
+
+           1       0.88      1.00      0.93         7
+           2       1.00      0.75      0.86         4
+           3       1.00      1.00      1.00         3
+
+    accuracy                           0.93        14
+   macro avg       0.96      0.92      0.93        14
+weighted avg       0.94      0.93      0.93        14
+",2022-06-23##12:11:03

@@ -5,6 +5,18 @@
 		},
 		{
 			"path": "..\\..\\ProjetMetier\\projet_metier"
+		},
+		{
+			"path": "..\\..\\..\\LIEEMA"
+		},
+		{
+			"path": "..\\..\\..\\test\\resumerparser"
+		},
+		{
+			"path": "..\\..\\..\\Parser\\Smart_Resume_Analyser_App"
+		},
+		{
+			"path": "..\\..\\..\\Traitement des donnees"
 		}
 	],
 	"settings": {
